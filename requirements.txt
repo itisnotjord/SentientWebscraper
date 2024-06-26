@@ -1,0 +1,9 @@
+streamlit
+transformers == 4.37.2
+pandas
+bs4
+requests
+openpyxl
+torch
+#docker run
+ #-p 8501:8501 -v /Users/jordangoh/Documents/Webscraper:/app my-app
