@@ -17,8 +17,7 @@ SentientWebscraper is a tool designed to scrape cybersecurity news from multiple
 ### Prerequisites
 
 - Docker
-- Python 3.x
-
+  
 ### Build and Run Instructions
 
 1. **Clone the repository:**
