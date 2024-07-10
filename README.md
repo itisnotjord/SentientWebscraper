@@ -2,7 +2,7 @@
 
 ## Overview
 
-SentientWebscraper is a powerful tool designed to scrape cybersecurity news from multiple sources and perform sentiment analysis using a Huggingface AI model. This project leverages `python`, `beautifulsoup4`, and `huggingface transformers` for the back-end, with `streamlit` for the front-end.
+SentientWebscraper is a tool designed to scrape cybersecurity news from multiple sources and perform sentiment analysis using a Huggingface AI model. This project leverages `beautifulsoup4`, `huggingface transformers` and `streamlit`.
 
 ## Features
 

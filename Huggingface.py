@@ -3,26 +3,37 @@ import pandas as pd
 from openpyxl import load_workbook
 
 # Load the Excel workbook
-df = pd.read_excel("/app/Articles.xlsx")
-# Access each row (article) using DataFrame indexing
-articles = [df.iloc[i, 2][:512] for i in range(len(df))]
-data = articles
-
-# Perform sentiment analysis
-specific_model = pipeline("text-classification", model="ProsusAI/finbert")
-lst = specific_model(data)
-sentiment_results = [f"{result['label'].capitalize()}, Score: {result['score']}" for result in lst]
-
-# Load existing workbook for editing
 wb = load_workbook("/app/Articles.xlsx")
-ws = wb.active
-ws.cell(row=1, column=4, value="Sentiment")
 
-# Add sentiment analysis results to a new column (starting from column B)
-for idx, result in enumerate(sentiment_results):
-    # Add 1 to idx because Excel rows and columns are 1-indexed
-    ws.cell(row=idx + 2, column=4, value=result)
+# Initialize the sentiment analysis model
+specific_model = pipeline("text-classification", model="ProsusAI/finbert")
+
+# Function to perform sentiment analysis on a list of texts
+def perform_sentiment_analysis(texts):
+    texts = [text[:512] for text in texts]  # Limit text to 512 characters for the model
+    results = specific_model(texts)
+    return [f"{result['label'].capitalize()}, Score: {result['score']:.2f}" for result in results]
+
+# Iterate over each sheet in the workbook
+for sheet_name in wb.sheetnames:
+    ws = wb[sheet_name]
+
+    # Read the data from the sheet into a DataFrame
+    data = ws.values
+    columns = next(data)[0:]  # Get the first row as column names
+    df = pd.DataFrame(data, columns=columns)
+
+    # Perform sentiment analysis on the articles
+    articles = df["Text"].tolist()  # Assuming the article text is in the "Text" column
+    sentiment_results = perform_sentiment_analysis(articles)
+
+    # Add a new header for the sentiment results
+    ws.cell(row=1, column=5, value="Sentiment")
+
+    # Append the sentiment results to the new column
+    for idx, result in enumerate(sentiment_results):
+        ws.cell(row=idx + 2, column=5, value=result)
 
 # Save the updated workbook
-wb.save("Articles.xlsx")
-print("Sentiment analysis results appended to Excel file.")
+wb.save("/app/Articles.xlsx")
+print("Sentiment analysis results appended to all sheets in the Excel file.")
